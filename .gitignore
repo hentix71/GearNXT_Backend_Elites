@@ -1,0 +1,90 @@
+# ============================================
+# ASP.NET Core / C# Build Outputs
+# ============================================
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# ============================================
+# Visual Studio Code
+# ============================================
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# ============================================
+# Visual Studio (in case anyone uses it)
+# ============================================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ============================================
+# Secrets & Environment Config
+# NEVER commit these
+# ============================================
+**/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Production.json
+*.env
+.env
+.env.local
+
+# ============================================
+# NuGet Packages
+# ============================================
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+packages/
+!**/packages/build/
+
+# ============================================
+# Entity Framework
+# ============================================
+# Uncomment below if you don't want to track migrations
+# **/Migrations/
+
+
+# ============================================
+# Docker
+# ============================================
+docker-compose.override.yml
+.docker/
+
+# ============================================
+# OS Generated Files
+# ============================================
+
+# Mac
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ============================================
+# Logs
+# ============================================
+*.log
+logs/
+*.log.*
+
+# ============================================
+# Test Results
+# ============================================
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
