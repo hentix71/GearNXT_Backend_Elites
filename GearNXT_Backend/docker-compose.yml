@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16
+    container_name: gearnxt-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${HOST_PORT}:5432"
+    volumes:
+      - gearnxt-pgdata:/var/lib/postgresql/data
+    networks:
+      - gearnxt-net
+
+networks:
+  gearnxt-net:
+
+volumes:
+  gearnxt-pgdata: 
