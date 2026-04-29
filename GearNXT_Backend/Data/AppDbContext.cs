@@ -14,6 +14,11 @@ public class AppDbContext : DbContext
     // Tables
     public DbSet<User> Users { get; set; }
     public DbSet<Vendor> Vendors { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<PartRequest> PartRequests { get; set; }
+    public DbSet<Review> Reviews { get; set; }
+    public DbSet<CreditPayment> CreditPayments { get; set; }
+    public DbSet<SalesInvoice> SalesInvoices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,5 +59,54 @@ public class AppDbContext : DbContext
             // IMPORTANT: deterministic UTC value (NO UtcNow)
             CreatedAt = new DateTime(2026, 01, 01, 0, 0, 0, DateTimeKind.Utc)
         });
+
+        // Seed a couple of customers for development
+        modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                Id = 10,
+                Name = "Demo Customer 1",
+                Email = "customer1@gearnxt.com",
+                PasswordHash = "DEMO_HASH",
+                Role = Role.Customer,
+                Phone = "9810000003",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 02, 02, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new User
+            {
+                Id = 11,
+                Name = "Demo Customer 2",
+                Email = "customer2@gearnxt.com",
+                PasswordHash = "DEMO_HASH",
+                Role = Role.Customer,
+                Phone = "9810000004",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 03, 01, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
+
+        // Seed appointments, part requests, reviews, credits, and sales invoices
+        modelBuilder.Entity<Appointment>().HasData(
+            new Appointment { Id = 1, CustomerId = 10, ServiceType = "Full Vehicle Service", PreferredDate = new DateTime(2026, 04, 30), Status = "Upcoming", Notes = "Regular maintenance", CreatedAt = new DateTime(2026, 04, 01) },
+            new Appointment { Id = 2, CustomerId = 10, ServiceType = "Brake Inspection", PreferredDate = new DateTime(2026, 04, 12), Status = "Completed", Notes = "Brake pads replaced", CreatedAt = new DateTime(2026, 03, 28) }
+        );
+
+        modelBuilder.Entity<PartRequest>().HasData(
+            new PartRequest { Id = 1, CustomerId = 10, PartName = "Turbocharger Kit", Description = "OEM preferred", Status = "Pending", CreatedAt = new DateTime(2026, 04, 25) }
+        );
+
+        modelBuilder.Entity<Review>().HasData(
+            new Review { Id = 1, CustomerId = 10, Rating = 5, Comment = "Excellent service.", CreatedAt = new DateTime(2026, 04, 13) }
+        );
+
+        modelBuilder.Entity<CreditPayment>().HasData(
+            new CreditPayment { Id = 1, CustomerId = 11, AmountDue = 6600m, DueDate = DateTime.UtcNow.AddDays(-40), IsPaid = false, CreatedAt = DateTime.UtcNow.AddDays(-70) }
+        );
+
+        modelBuilder.Entity<SalesInvoice>().HasData(
+            new SalesInvoice { Id = 1, InvoiceNumber = "INV-2026-1001", CustomerId = 10, Subtotal = 12500m, Discount = 1250m, DiscountApplied = true, GrandTotal = 11250m, PaymentStatus = "Paid", Date = new DateTime(2026, 04, 20) },
+            new SalesInvoice { Id = 2, InvoiceNumber = "INV-2026-1002", CustomerId = 11, Subtotal = 16500m, Discount = 1650m, DiscountApplied = true, GrandTotal = 14850m, PaymentStatus = "Credit", Date = new DateTime(2026, 03, 12) }
+        );
     }
 }

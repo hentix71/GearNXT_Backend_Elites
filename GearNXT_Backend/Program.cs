@@ -1,5 +1,6 @@
 using GearNXT_Backend.Data;
 using GearNXT_Backend.Helpers;
+using GearNXT_Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -20,11 +21,11 @@ builder.Configuration.AddEnvironmentVariables();
 
 
 // For PostgreSQL Database
-var connectionStging = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration["ConnectionStringsDefaultConnection"];
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionStging));    
+    options.UseNpgsql(connectionString));    
 
 
 // For JWT Authentication
@@ -64,6 +65,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 // JwtHelper — Dependency Injection
 // ============================================
 builder.Services.AddScoped<JwtHelper>();
+// Email service (development logger)
+builder.Services.AddScoped<EmailService>();
 
 // ============================================
 // Controllers
