@@ -11,6 +11,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="DotNetEnv" Version="3.2.0" />
+    <PackageReference Include="MailKit" Version="4.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
@@ -26,6 +27,8 @@
     <Folder Include="Controllers\" />
     <Folder Include="DTOs\" />
     <Folder Include="DTOs\Auth\" />
+    <Folder Include="DTOs\Customer\" />
+    <Folder Include="DTOs\Sales\" />
     <Folder Include="DTOs\Staff\" />
     <Folder Include="DTOs\Vendor\" />
     <Folder Include="Helpers\" />

@@ -14,11 +14,15 @@ public class AppDbContext : DbContext
     // Tables
     public DbSet<User> Users { get; set; }
     public DbSet<Vendor> Vendors { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Vehicle> Vehicles { get; set; }
+    public DbSet<Part> Parts { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<PartRequest> PartRequests { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<CreditPayment> CreditPayments { get; set; }
     public DbSet<SalesInvoice> SalesInvoices { get; set; }
+    public DbSet<SalesInvoiceItem> SalesInvoiceItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,9 +47,48 @@ public class AppDbContext : DbContext
             entity.HasIndex(v => v.Email).IsUnique();
         });
 
-        // =========================
-        // SEED DATA (FIXED - STABLE)
-        // =========================
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.HasIndex(customer => customer.Email).IsUnique();
+
+            entity.HasMany(customer => customer.Vehicles)
+                  .WithOne(vehicle => vehicle.Customer)
+                  .HasForeignKey(vehicle => vehicle.CustomerId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(customer => customer.SalesInvoices)
+                  .WithOne(invoice => invoice.Customer)
+                  .HasForeignKey(invoice => invoice.CustomerId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Vehicle>(entity =>
+        {
+            entity.HasIndex(vehicle => vehicle.VehicleNumber).IsUnique();
+            entity.HasIndex(vehicle => vehicle.LicensePlate).IsUnique();
+        });
+
+        modelBuilder.Entity<Part>(entity =>
+        {
+            entity.HasIndex(part => part.Name).IsUnique();
+        });
+
+        modelBuilder.Entity<SalesInvoice>(entity =>
+        {
+            entity.HasMany(invoice => invoice.Items)
+                  .WithOne(item => item.Invoice)
+                  .HasForeignKey(item => item.InvoiceId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<SalesInvoiceItem>(entity =>
+        {
+            entity.HasOne(item => item.Part)
+                  .WithMany()
+                  .HasForeignKey(item => item.PartId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
         modelBuilder.Entity<User>().HasData(new User
         {
             Id = 1,
@@ -60,29 +103,92 @@ public class AppDbContext : DbContext
             CreatedAt = new DateTime(2026, 01, 01, 0, 0, 0, DateTimeKind.Utc)
         });
 
-        // Seed a couple of customers for development
-        modelBuilder.Entity<User>().HasData(
-            new User
+        modelBuilder.Entity<Customer>().HasData(
+            new Customer
             {
-                Id = 10,
-                Name = "Demo Customer 1",
-                Email = "customer1@gearnxt.com",
-                PasswordHash = "DEMO_HASH",
-                Role = Role.Customer,
-                Phone = "9810000003",
-                IsActive = true,
-                CreatedAt = new DateTime(2026, 02, 02, 0, 0, 0, DateTimeKind.Utc)
+                Id = 100,
+                Name = "Anil Sharma",
+                Email = "anil.sharma@example.com",
+                Phone = "9801112233",
+                Address = "Kathmandu",
+                CreatedAt = new DateTime(2026, 04, 02, 0, 0, 0, DateTimeKind.Utc)
             },
-            new User
+            new Customer
             {
-                Id = 11,
-                Name = "Demo Customer 2",
-                Email = "customer2@gearnxt.com",
-                PasswordHash = "DEMO_HASH",
-                Role = Role.Customer,
-                Phone = "9810000004",
+                Id = 101,
+                Name = "Sita Karki",
+                Email = "sita.karki@example.com",
+                Phone = "9802223344",
+                Address = "Lalitpur",
+                CreatedAt = new DateTime(2026, 04, 07, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
+
+        modelBuilder.Entity<Vehicle>().HasData(
+            new Vehicle
+            {
+                Id = 1000,
+                CustomerId = 100,
+                Make = "Honda",
+                Model = "City",
+                Year = 2022,
+                LicensePlate = "BA-2-PA-1234",
+                VehicleNumber = "VIN-ANIL-001",
+                CreatedAt = new DateTime(2026, 04, 02, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Vehicle
+            {
+                Id = 1001,
+                CustomerId = 101,
+                Make = "Toyota",
+                Model = "Corolla",
+                Year = 2021,
+                LicensePlate = "BA-3-PA-5678",
+                VehicleNumber = "VIN-SITA-001",
+                CreatedAt = new DateTime(2026, 04, 07, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
+
+        modelBuilder.Entity<Part>().HasData(
+            new Part
+            {
+                Id = 1,
+                Name = "Brake Pad Set",
+                Description = "Front brake pad set",
+                Price = 6800m,
+                StockQuantity = 25,
                 IsActive = true,
-                CreatedAt = new DateTime(2026, 03, 01, 0, 0, 0, DateTimeKind.Utc)
+                CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Part
+            {
+                Id = 2,
+                Name = "Oil Filter",
+                Description = "Premium oil filter",
+                Price = 2200m,
+                StockQuantity = 40,
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Part
+            {
+                Id = 3,
+                Name = "Air Filter",
+                Description = "Engine air filter",
+                Price = 1800m,
+                StockQuantity = 35,
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Part
+            {
+                Id = 4,
+                Name = "Clutch Plate",
+                Description = "Heavy-duty clutch plate",
+                Price = 9200m,
+                StockQuantity = 18,
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)
             }
         );
 
@@ -118,17 +224,72 @@ public class AppDbContext : DbContext
         );
 
         modelBuilder.Entity<SalesInvoice>().HasData(
-            new SalesInvoice { 
-                Id = 1, InvoiceNumber = "INV-2026-1001", CustomerId = 10, 
-                Subtotal = 12500m, Discount = 1250m, DiscountApplied = true, 
-                GrandTotal = 11250m, PaymentStatus = "Paid", 
-                Date = new DateTime(2026, 04, 20, 0, 0, 0, DateTimeKind.Utc)            
+            new SalesInvoice
+            {
+                Id = 2000,
+                InvoiceNumber = "INV-20260420-0001",
+                CustomerId = 100,
+                StaffId = 1,
+                TotalAmount = 12500m,
+                DiscountAmount = 1250m,
+                DiscountApplied = true,
+                GrandTotal = 11250m,
+                PaymentStatus = "Paid",
+                InvoiceDate = new DateTime(2026, 04, 20, 0, 0, 0, DateTimeKind.Utc),
+                EmailSent = false
             },
-            new SalesInvoice { 
-                Id = 2, InvoiceNumber = "INV-2026-1002", CustomerId = 11, 
-                Subtotal = 16500m, Discount = 1650m, DiscountApplied = true, 
-                GrandTotal = 14850m, PaymentStatus = "Credit", 
-                Date = new DateTime(2026, 03, 12, 0, 0, 0, DateTimeKind.Utc)            
+            new SalesInvoice
+            {
+                Id = 2001,
+                InvoiceNumber = "INV-20260421-0002",
+                CustomerId = 101,
+                StaffId = 1,
+                TotalAmount = 16500m,
+                DiscountAmount = 1650m,
+                DiscountApplied = true,
+                GrandTotal = 14850m,
+                PaymentStatus = "Credit",
+                InvoiceDate = new DateTime(2026, 04, 21, 0, 0, 0, DateTimeKind.Utc),
+                EmailSent = false
+            }
+        );
+
+        modelBuilder.Entity<SalesInvoiceItem>().HasData(
+            new SalesInvoiceItem
+            {
+                Id = 3000,
+                InvoiceId = 2000,
+                PartId = 1,
+                Quantity = 1,
+                UnitPrice = 6800m,
+                PartName = "Brake Pad Set"
+            },
+            new SalesInvoiceItem
+            {
+                Id = 3001,
+                InvoiceId = 2000,
+                PartId = 4,
+                Quantity = 1,
+                UnitPrice = 9200m,
+                PartName = "Clutch Plate"
+            },
+            new SalesInvoiceItem
+            {
+                Id = 3002,
+                InvoiceId = 2001,
+                PartId = 2,
+                Quantity = 3,
+                UnitPrice = 2200m,
+                PartName = "Oil Filter"
+            },
+            new SalesInvoiceItem
+            {
+                Id = 3003,
+                InvoiceId = 2001,
+                PartId = 3,
+                Quantity = 2,
+                UnitPrice = 1800m,
+                PartName = "Air Filter"
             }
         );
     }
