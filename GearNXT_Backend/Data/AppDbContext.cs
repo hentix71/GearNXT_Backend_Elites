@@ -14,6 +14,10 @@ public class AppDbContext : DbContext
     // Tables
     public DbSet<User> Users { get; set; }
     public DbSet<Vendor> Vendors { get; set; }
+    public DbSet<Part> Parts { get; set; }
+    public DbSet<PurchaseInvoice> PurchaseInvoices { get; set; }
+    public DbSet<PurchaseInvoiceItem> PurchaseInvoiceItems { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<PartRequest> PartRequests { get; set; }
     public DbSet<Review> Reviews { get; set; }
@@ -44,6 +48,39 @@ public class AppDbContext : DbContext
         });
 
         // =========================
+        // PART CONFIGURATION
+        // =========================
+        modelBuilder.Entity<Part>(entity =>
+        {
+            entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
+            entity.HasOne<Vendor>()
+                  .WithMany()
+                  .HasForeignKey(p => p.VendorId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // =========================
+        // PURCHASE INVOICE CONFIGURATION
+        // =========================
+        modelBuilder.Entity<PurchaseInvoice>(entity =>
+        {
+            entity.Property(i => i.TotalAmount).HasColumnType("decimal(18,2)");
+            entity.HasMany(i => i.Items)
+                  .WithOne()
+                  .HasForeignKey(i => i.InvoiceId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PurchaseInvoiceItem>(entity =>
+        {
+            entity.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");
+            entity.HasOne<Part>()
+                  .WithMany()
+                  .HasForeignKey(i => i.PartId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // =========================
         // SEED DATA (FIXED - STABLE)
         // =========================
         modelBuilder.Entity<User>().HasData(new User
@@ -59,6 +96,39 @@ public class AppDbContext : DbContext
             // IMPORTANT: deterministic UTC value (NO UtcNow)
             CreatedAt = new DateTime(2026, 01, 01, 0, 0, 0, DateTimeKind.Utc)
         });
+
+        modelBuilder.Entity<Vendor>().HasData(
+            new Vendor
+            {
+                Id = 1,
+                Name = "Atlas Auto Supplies",
+                Email = "atlas@vendors.com",
+                Phone = "9800000011",
+                Address = "Kathmandu",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Vendor
+            {
+                Id = 2,
+                Name = "Everest Parts Co.",
+                Email = "everest@vendors.com",
+                Phone = "9800000022",
+                Address = "Pokhara",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Vendor
+            {
+                Id = 3,
+                Name = "Terai Traders",
+                Email = "terai@vendors.com",
+                Phone = "9800000033",
+                Address = "Biratnagar",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
 
         // Seed a couple of customers for development
         modelBuilder.Entity<User>().HasData(

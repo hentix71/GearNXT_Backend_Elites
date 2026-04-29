@@ -1,6 +1,7 @@
 using GearNXT_Backend.Data;
 using GearNXT_Backend.Helpers;
 using GearNXT_Backend.Services;
+using GearNXT_Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -65,6 +66,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 // JwtHelper — Dependency Injection
 // ============================================
 builder.Services.AddScoped<JwtHelper>();
+builder.Services.AddScoped<LowStockNotifier>();
 // Email service (development logger)
 builder.Services.AddScoped<EmailService>();
 
