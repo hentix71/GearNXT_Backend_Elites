@@ -21,7 +21,7 @@ builder.Configuration.AddEnvironmentVariables();
 
 
 // For PostgreSQL Database
-var connectionString = builder.Configuration["ConnectionStringsDefaultConnection"];
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
