@@ -32,10 +32,7 @@
     <Folder Include="DTOs\Staff\" />
     <Folder Include="DTOs\Vendor\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Middleware\" />
     <Folder Include="Models\" />
-    <Folder Include="Services\" />
-    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
 </Project>

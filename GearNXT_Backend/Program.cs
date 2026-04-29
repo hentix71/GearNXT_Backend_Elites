@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using DotNetEnv;
 using System.Text;
 
+using GearNXT_Backend.Services.Interfaces;
 
 // Load environment variables from .env file
 Env.Load();
@@ -113,6 +114,14 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+
+// ============================================
+// Services — Dependency Injection
+// ============================================
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+
+
 // ============================================
 // CORS — allows frontend to call the API
 // ============================================
@@ -131,6 +140,8 @@ var app = builder.Build();
 // ============================================
 // Middleware Pipeline
 // ============================================
+app.UseMiddleware<GearNXT_Backend.Middleware.ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
