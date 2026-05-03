@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using GearNXT_Backend.Services.Interfaces;
 using GearNXT_Backend.DTOs.Auth;
 using Microsoft.AspNetCore.Authorization;
-
+using GearNXT_Backend.Models;
+using GearNXT_Backend.Services;
 namespace GearNXT_Backend.Controllers
 {
     [Authorize(Roles = "Admin")]
@@ -11,18 +12,18 @@ namespace GearNXT_Backend.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly IAdminService _adminService;
+        private readonly UserService _userService;
 
-        public AdminController(IAdminService adminService)
+        public AdminController(UserService userService)
         {
-            _adminService = adminService;
+            _userService = userService;
         }
 
-        // GET /api/admin/users/role/{role}
-        [HttpGet("users/role/{role}")]
-        public async Task<IActionResult> ListUsers([FromRoute] string role)
+        // GET /api/admin/users
+        [HttpGet("users")]
+        public async Task<IActionResult> ListUsers([FromQuery] Role? role)
         {
-            var users = await _adminService.ListUsersAsync(role);
+            var users = await _userService.ListUsersAsync(role);
 
             if (!users.Any())
                 return NotFound("No users found with the specified role.");

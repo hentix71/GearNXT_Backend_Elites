@@ -8,12 +8,12 @@ using GearNXT_Backend.Helpers;
 
 namespace GearNXT_Backend.Services;
 
-public class AdminService : IAdminService
+public class UserService
 {
     private readonly AppDbContext _db;
     private readonly JwtHelper _jwt;
 
-    public AdminService(AppDbContext db, JwtHelper jwt)
+    public UserService(AppDbContext db, JwtHelper jwt)
     {
         _db = db;
         _jwt = jwt;
@@ -29,13 +29,16 @@ public class AdminService : IAdminService
         Phone = user.Phone
     };
 
-    public async Task <List<UserDto>> ListUsersAsync(string filterRole)
+    public async Task <List<UserDto>> ListUsersAsync(Role? filterRole)
     {
-        if (!Enum.TryParse<Role>(filterRole, true, out var role))
-            throw new ArgumentException("Invalid role specified");
-
+        if (filterRole == null)
+        {
+            return await _db.Users
+                .Select(u => MapToDto(u))
+                .ToListAsync();
+        }
         return await _db.Users
-            .Where(u => u.Role == role)
+            .Where(u => u.Role == filterRole)
             .Select(u => MapToDto(u))
             .ToListAsync();
     }
