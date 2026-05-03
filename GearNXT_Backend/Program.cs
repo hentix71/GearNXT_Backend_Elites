@@ -7,7 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using DotNetEnv;
 using System.Text;
-
+using System.Text.Json.Serialization;
+using GearNXT_Backend.Services.Interfaces;
 
 // Load environment variables from .env file
 Env.Load();
@@ -65,13 +66,16 @@ builder.Services.AddAutoMapper(typeof(Program));
 // JwtHelper — Dependency Injection
 // ============================================
 builder.Services.AddScoped<JwtHelper>();
-// Email service (development logger)
-builder.Services.AddScoped<EmailService>();
 
 // ============================================
 // Controllers
 // ============================================
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter()); // This converts enums to strings
+    });
 
 // ============================================
 // Swagger with JWT Support
@@ -113,6 +117,15 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+
+// ============================================
+// Services — Dependency Injection
+// ============================================
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<EmailService>();
+
+
 // ============================================
 // CORS — allows frontend to call the API
 // ============================================
@@ -131,6 +144,8 @@ var app = builder.Build();
 // ============================================
 // Middleware Pipeline
 // ============================================
+app.UseMiddleware<GearNXT_Backend.Middleware.ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

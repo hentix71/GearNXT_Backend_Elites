@@ -24,18 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="DTOs\" />
     <Folder Include="DTOs\Auth\" />
     <Folder Include="DTOs\Customer\" />
     <Folder Include="DTOs\Sales\" />
-    <Folder Include="DTOs\Staff\" />
     <Folder Include="DTOs\Vendor\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Middleware\" />
     <Folder Include="Models\" />
-    <Folder Include="Services\" />
-    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace GearNXT_Backend.Models;
 
+[Index(nameof(Name), IsUnique = true)]
 public class User
 {
         public int Id { get; set; }
