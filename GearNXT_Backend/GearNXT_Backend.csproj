@@ -24,11 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
     <Folder Include="DTOs\Auth\" />
     <Folder Include="DTOs\Customer\" />
     <Folder Include="DTOs\Sales\" />
-    <Folder Include="DTOs\Staff\" />
     <Folder Include="DTOs\Vendor\" />
     <Folder Include="Helpers\" />
     <Folder Include="Models\" />

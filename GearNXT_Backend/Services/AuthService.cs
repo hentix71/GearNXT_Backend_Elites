@@ -49,6 +49,10 @@ public class AuthService : IAuthService
 
         if (exists)
             throw new InvalidOperationException("Email already registered.");
+        
+        var nameExists = await _db.Users.AnyAsync(u => u.Name == registerRequest.Name);
+        if (nameExists)
+            throw new InvalidOperationException("Name already taken.");
 
         // Hash the password
         var hash = BCrypt.Net.BCrypt.HashPassword(registerRequest.Password);
