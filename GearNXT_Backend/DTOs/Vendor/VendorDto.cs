@@ -32,7 +32,7 @@ public class ResponseVendorDto
 
 public class VendorDto
 {
-    public string Name { get; set; } = string.Empty;
+    public string? Name { get; set; }
 
     [EmailAddress]
     public string? Email { get; set; }

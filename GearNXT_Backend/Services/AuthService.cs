@@ -113,9 +113,6 @@ public class AuthService : IAuthService
         var valid = BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash);
         if (!valid)
         {
-            var newHash = BCrypt.Net.BCrypt.HashPassword("admin");
-            Console.WriteLine($"Hash of 'admin': {newHash}");
-
             Console.WriteLine("Invalid Password");
             throw new ArgumentException("Invalid Email or Password");
         }
