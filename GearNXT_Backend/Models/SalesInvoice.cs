@@ -13,9 +13,11 @@ public class SalesInvoice
 
     public int CustomerId { get; set; }
 
-    public decimal Subtotal { get; set; }
+    public int StaffId { get; set; }
 
-    public decimal Discount { get; set; }
+    public decimal TotalAmount { get; set; }
+
+    public decimal DiscountAmount { get; set; }
 
     public bool DiscountApplied { get; set; }
 
@@ -24,7 +26,11 @@ public class SalesInvoice
     [MaxLength(50)]
     public string PaymentStatus { get; set; } = "Paid";
 
-    public DateTime Date { get; set; } = DateTime.UtcNow;
+    public DateTime InvoiceDate { get; set; } = DateTime.UtcNow;
 
     public bool EmailSent { get; set; } = false;
+
+    public Customer? Customer { get; set; }
+
+    public ICollection<SalesInvoiceItem> Items { get; set; } = new List<SalesInvoiceItem>();
 }

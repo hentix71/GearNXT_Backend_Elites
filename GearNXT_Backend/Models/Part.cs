@@ -25,7 +25,9 @@ public class Part
     public decimal Price { get; set; }
 
     [Range(0, int.MaxValue)]
-    public int StockQty { get; set; }
+    public int StockQuantity { get; set; }
+
+    public bool IsActive { get; set; } = true;
 
     public int VendorId { get; set; }
 

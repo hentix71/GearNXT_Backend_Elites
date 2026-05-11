@@ -1,7 +1,9 @@
 using System;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 namespace GearNXT_Backend.Models;
 
+[Index(nameof(Name), IsUnique = true)]
 public class Vendor
 {
 public int Id { get; set; }
@@ -10,13 +12,16 @@ public int Id { get; set; }
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
+        [Required]
         [EmailAddress]
         [MaxLength(150)]
         public string? Email { get; set; }
 
+        [Required]
         [MaxLength(20)]
         public string? Phone { get; set; }
 
+        [Required]
         [MaxLength(250)]
         public string? Address { get; set; }
 
