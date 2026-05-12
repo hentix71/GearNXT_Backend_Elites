@@ -92,7 +92,7 @@ public class AdminPurchaseInvoicesController : ControllerBase
         };
 
         _db.PurchaseInvoiceItems.Add(item);
-        part.StockQty += dto.Quantity;
+        part.StockQuantity += dto.Quantity;
 
         await _db.SaveChangesAsync();
         await transaction.CommitAsync();

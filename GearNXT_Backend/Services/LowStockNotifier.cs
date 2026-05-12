@@ -21,7 +21,7 @@ public class LowStockNotifier
     {
         var lowStockParts = await _db.Parts
             .AsNoTracking()
-            .Where(p => p.StockQty < 10)
+            .Where(p => p.StockQuantity < 10)
             .ToListAsync();
 
         if (lowStockParts.Count == 0)
@@ -36,7 +36,7 @@ public class LowStockNotifier
     {
         var lowStockParts = await _db.Parts
             .AsNoTracking()
-            .Where(p => partIds.Contains(p.Id) && p.StockQty < 10)
+            .Where(p => partIds.Contains(p.Id) && p.StockQuantity < 10)
             .ToListAsync();
 
         if (lowStockParts.Count == 0)
@@ -46,7 +46,7 @@ public class LowStockNotifier
 
         foreach (var part in lowStockParts)
         {
-            var message = $"Part {part.Name} stock is low ({part.StockQty}).";
+            var message = $"Part {part.Name} stock is low ({part.StockQuantity}).";
             var exists = await _db.Notifications.AnyAsync(n =>
                 !n.IsRead && n.Type == "LowStock" && n.PartId == part.Id);
 

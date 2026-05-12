@@ -82,7 +82,7 @@ namespace GearNXT_Backend.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("StockQty")
+                    b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
 
                     b.Property<int>("VendorId")

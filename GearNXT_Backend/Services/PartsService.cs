@@ -38,7 +38,7 @@ public class PartsService
 
     public async Task<ServiceResult<Part>> CreatePartAsync(PartCreateDto dto)
     {
-        var validationError = ValidatePart(dto.Name, dto.Category, dto.Price, dto.StockQty, dto.VendorId);
+        var validationError = ValidatePart(dto.Name, dto.Category, dto.Price, dto.StockQuantity, dto.VendorId);
         if (validationError != null)
         {
             return ServiceResult<Part>.Fail(400, validationError);
@@ -64,7 +64,7 @@ public class PartsService
             Category = dto.Category.Trim(),
             Description = dto.Description,
             Price = dto.Price,
-            StockQty = dto.StockQty,
+            StockQuantity = dto.StockQuantity,
             VendorId = dto.VendorId,
             CreatedAt = DateTime.UtcNow
         };
@@ -112,7 +112,7 @@ public class PartsService
 
     public async Task<ServiceResult<Part>> UpdatePartAsync(int id, PartUpdateDto dto)
     {
-        var validationError = ValidatePart(dto.Name, dto.Category, dto.Price, dto.StockQty, dto.VendorId);
+        var validationError = ValidatePart(dto.Name, dto.Category, dto.Price, dto.StockQuantity, dto.VendorId);
         if (validationError != null)
         {
             return ServiceResult<Part>.Fail(400, validationError);
@@ -142,7 +142,7 @@ public class PartsService
         part.Category = dto.Category.Trim();
         part.Description = dto.Description;
         part.Price = dto.Price;
-        part.StockQty = dto.StockQty;
+        part.StockQuantity = dto.StockQuantity;
         part.VendorId = dto.VendorId;
 
         await _db.SaveChangesAsync();
@@ -175,13 +175,13 @@ public class PartsService
     {
         var parts = await _db.Parts
             .AsNoTracking()
-            .Where(p => p.StockQty < 10)
+            .Where(p => p.StockQuantity < 10)
             .ToListAsync();
 
         return ServiceResult<List<Part>>.Ok(parts);
     }
 
-    private static string? ValidatePart(string name, string category, decimal price, int stockQty, int vendorId)
+    private static string? ValidatePart(string name, string category, decimal price, int stockQuantity, int vendorId)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -203,9 +203,9 @@ public class PartsService
             return "Price must be greater than 0.";
         }
 
-        if (stockQty < 0)
+        if (stockQuantity < 0)
         {
-            return "StockQty must be 0 or greater.";
+            return "StockQuantity must be 0 or greater.";
         }
 
         if (vendorId <= 0)

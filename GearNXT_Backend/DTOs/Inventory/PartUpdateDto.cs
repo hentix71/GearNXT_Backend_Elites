@@ -19,7 +19,7 @@ public class PartUpdateDto
     public decimal Price { get; set; }
 
     [Range(0, int.MaxValue)]
-    public int StockQty { get; set; }
+    public int StockQuantity { get; set; }
 
     [Required]
     public int VendorId { get; set; }

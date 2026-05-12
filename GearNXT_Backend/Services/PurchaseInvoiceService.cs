@@ -80,7 +80,7 @@ public class PurchaseInvoiceService
             });
 
             var part = parts.First(p => p.Id == item.PartId);
-            part.StockQty += item.Quantity;
+            part.StockQuantity += item.Quantity;
         }
 
         _db.PurchaseInvoiceItems.AddRange(items);

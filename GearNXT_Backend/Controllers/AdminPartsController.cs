@@ -34,7 +34,7 @@ public class AdminPartsController : ControllerBase
                 Id = p.Id,
                 Name = p.Name,
                 Sku = p.Sku ?? string.Empty,
-                Stock = p.StockQty,
+                Stock = p.StockQuantity,
                 Price = p.Price
             })
             .ToListAsync();
@@ -57,7 +57,7 @@ public class AdminPartsController : ControllerBase
             Sku = dto.Sku,
             Category = "General",
             Price = dto.Price,
-            StockQty = dto.Stock,
+            StockQuantity = dto.Stock,
             VendorId = vendorId,
             CreatedAt = DateTime.UtcNow
         };
@@ -70,7 +70,7 @@ public class AdminPartsController : ControllerBase
             Id = part.Id,
             Name = part.Name,
             Sku = part.Sku ?? string.Empty,
-            Stock = part.StockQty,
+            Stock = part.StockQuantity,
             Price = part.Price
         };
 
@@ -98,7 +98,7 @@ public class AdminPartsController : ControllerBase
 
         part.Name = dto.Name;
         part.Sku = dto.Sku;
-        part.StockQty = dto.Stock;
+        part.StockQuantity = dto.Stock;
         part.Price = dto.Price;
 
         await _db.SaveChangesAsync();
@@ -109,7 +109,7 @@ public class AdminPartsController : ControllerBase
             Id = part.Id,
             Name = part.Name,
             Sku = part.Sku ?? string.Empty,
-            Stock = part.StockQty,
+            Stock = part.StockQuantity,
             Price = part.Price
         });
     }

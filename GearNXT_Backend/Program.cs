@@ -127,6 +127,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<VendorService>();
+builder.Services.AddScoped<PartsService>();
+builder.Services.AddScoped<PurchaseInvoiceService>();
+builder.Services.AddScoped<LowStockNotifier>();
+builder.Services.AddScoped<NotificationService>();
 
 
 // ============================================

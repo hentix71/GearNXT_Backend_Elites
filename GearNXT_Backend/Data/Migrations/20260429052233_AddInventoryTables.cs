@@ -40,7 +40,7 @@ namespace GearNXT_Backend.Data.Migrations
                     Category = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Price = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    StockQty = table.Column<int>(type: "integer", nullable: false),
+                    StockQuantity = table.Column<int>(type: "integer", nullable: false),
                     VendorId = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

@@ -175,7 +175,7 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
-                    b.Property<int>("StockQty")
+                    b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
 
                     b.Property<int>("VendorId")
