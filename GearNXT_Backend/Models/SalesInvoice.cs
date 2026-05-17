@@ -33,4 +33,6 @@ public class SalesInvoice
     public Customer? Customer { get; set; }
 
     public ICollection<SalesInvoiceItem> Items { get; set; } = new List<SalesInvoiceItem>();
+
+    public User? Staff { get; set; }
 }

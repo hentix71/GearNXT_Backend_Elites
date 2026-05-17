@@ -55,6 +55,8 @@ namespace GearNXT_Backend.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("Appointments");
 
                     b.HasData(
@@ -62,7 +64,7 @@ namespace GearNXT_Backend.Data.Migrations
                         {
                             Id = 1,
                             CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CustomerId = 10,
+                            CustomerId = 100,
                             Notes = "Regular maintenance",
                             PreferredDate = new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Utc),
                             ServiceType = "Full Vehicle Service",
@@ -72,7 +74,7 @@ namespace GearNXT_Backend.Data.Migrations
                         {
                             Id = 2,
                             CreatedAt = new DateTime(2026, 3, 28, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CustomerId = 10,
+                            CustomerId = 100,
                             Notes = "Brake pads replaced",
                             PreferredDate = new DateTime(2026, 4, 12, 0, 0, 0, 0, DateTimeKind.Utc),
                             ServiceType = "Brake Inspection",
@@ -260,7 +262,7 @@ namespace GearNXT_Backend.Data.Migrations
                             Name = "Brake Pad Set",
                             Price = 6800m,
                             StockQuantity = 25,
-                            VendorId = 0
+                            VendorId = 1
                         },
                         new
                         {
@@ -272,7 +274,7 @@ namespace GearNXT_Backend.Data.Migrations
                             Name = "Oil Filter",
                             Price = 2200m,
                             StockQuantity = 40,
-                            VendorId = 0
+                            VendorId = 1
                         },
                         new
                         {
@@ -284,7 +286,7 @@ namespace GearNXT_Backend.Data.Migrations
                             Name = "Air Filter",
                             Price = 1800m,
                             StockQuantity = 35,
-                            VendorId = 0
+                            VendorId = 2
                         },
                         new
                         {
@@ -296,7 +298,7 @@ namespace GearNXT_Backend.Data.Migrations
                             Name = "Clutch Plate",
                             Price = 9200m,
                             StockQuantity = 18,
-                            VendorId = 0
+                            VendorId = 3
                         });
                 });
 
@@ -330,6 +332,8 @@ namespace GearNXT_Backend.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("PartRequests");
 
                     b.HasData(
@@ -337,7 +341,7 @@ namespace GearNXT_Backend.Data.Migrations
                         {
                             Id = 1,
                             CreatedAt = new DateTime(2026, 4, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CustomerId = 10,
+                            CustomerId = 100,
                             Description = "OEM preferred",
                             PartName = "Turbocharger Kit",
                             Status = "Pending"
@@ -366,6 +370,8 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("VendorId");
 
                     b.ToTable("PurchaseInvoices");
                 });
@@ -422,6 +428,8 @@ namespace GearNXT_Backend.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("Reviews");
 
                     b.HasData(
@@ -430,7 +438,7 @@ namespace GearNXT_Backend.Data.Migrations
                             Id = 1,
                             Comment = "Excellent service.",
                             CreatedAt = new DateTime(2026, 4, 13, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CustomerId = 10,
+                            CustomerId = 100,
                             Rating = 5
                         });
                 });
@@ -447,7 +455,7 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("DiscountAmount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("DiscountApplied")
                         .HasColumnType("boolean");
@@ -456,7 +464,7 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<decimal>("GrandTotal")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("InvoiceDate")
                         .HasColumnType("timestamp with time zone");
@@ -475,11 +483,13 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("StaffId");
 
                     b.ToTable("SalesInvoices");
 
@@ -501,7 +511,7 @@ namespace GearNXT_Backend.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CustomerId = 11,
+                            CustomerId = 100,
                             DiscountAmount = 1650m,
                             DiscountApplied = true,
                             EmailSent = false,
@@ -509,7 +519,7 @@ namespace GearNXT_Backend.Data.Migrations
                             InvoiceDate = new DateTime(2026, 3, 12, 0, 0, 0, 0, DateTimeKind.Utc),
                             InvoiceNumber = "INV-2026-1002",
                             PaymentStatus = "Credit",
-                            StaffId = 0,
+                            StaffId = 1,
                             TotalAmount = 16500m
                         },
                         new
@@ -550,7 +560,7 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -656,7 +666,7 @@ namespace GearNXT_Backend.Data.Migrations
                             Email = "admin@gearnxt.com",
                             IsActive = true,
                             Name = "Admin",
-                            PasswordHash = "PRECOMPUTED_HASH_HERE",
+                            PasswordHash = "$2a$11$Sw.RuMV4y9DiJY1wcIM6k.9/yQpmaqNBe3H7uB5Vr/htVWaYKp94i",
                             Phone = "9800000000",
                             Role = "Admin"
                         });
@@ -812,28 +822,78 @@ namespace GearNXT_Backend.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("GearNXT_Backend.Models.Appointment", b =>
+                {
+                    b.HasOne("GearNXT_Backend.Models.Customer", "Customer")
+                        .WithMany("Appointments")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("GearNXT_Backend.Models.Part", b =>
                 {
-                    b.HasOne("GearNXT_Backend.Models.Vendor", null)
-                        .WithMany()
+                    b.HasOne("GearNXT_Backend.Models.Vendor", "Vendor")
+                        .WithMany("Parts")
                         .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Vendor");
+                });
+
+            modelBuilder.Entity("GearNXT_Backend.Models.PartRequest", b =>
+                {
+                    b.HasOne("GearNXT_Backend.Models.Customer", "Customer")
+                        .WithMany("PartRequests")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("GearNXT_Backend.Models.PurchaseInvoice", b =>
+                {
+                    b.HasOne("GearNXT_Backend.Models.Vendor", "Vendor")
+                        .WithMany("PurchaseInvoices")
+                        .HasForeignKey("VendorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Vendor");
                 });
 
             modelBuilder.Entity("GearNXT_Backend.Models.PurchaseInvoiceItem", b =>
                 {
-                    b.HasOne("GearNXT_Backend.Models.PurchaseInvoice", null)
+                    b.HasOne("GearNXT_Backend.Models.PurchaseInvoice", "Invoice")
                         .WithMany("Items")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GearNXT_Backend.Models.Part", null)
-                        .WithMany()
+                    b.HasOne("GearNXT_Backend.Models.Part", "Part")
+                        .WithMany("PurchaseInvoiceItems")
                         .HasForeignKey("PartId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("Part");
+                });
+
+            modelBuilder.Entity("GearNXT_Backend.Models.Review", b =>
+                {
+                    b.HasOne("GearNXT_Backend.Models.Customer", "Customer")
+                        .WithMany("Reviews")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("GearNXT_Backend.Models.SalesInvoice", b =>
@@ -844,7 +904,15 @@ namespace GearNXT_Backend.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("GearNXT_Backend.Models.User", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("GearNXT_Backend.Models.SalesInvoiceItem", b =>
@@ -856,7 +924,7 @@ namespace GearNXT_Backend.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("GearNXT_Backend.Models.Part", "Part")
-                        .WithMany()
+                        .WithMany("SalesInvoiceItems")
                         .HasForeignKey("PartId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -879,9 +947,22 @@ namespace GearNXT_Backend.Data.Migrations
 
             modelBuilder.Entity("GearNXT_Backend.Models.Customer", b =>
                 {
+                    b.Navigation("Appointments");
+
+                    b.Navigation("PartRequests");
+
+                    b.Navigation("Reviews");
+
                     b.Navigation("SalesInvoices");
 
                     b.Navigation("Vehicles");
+                });
+
+            modelBuilder.Entity("GearNXT_Backend.Models.Part", b =>
+                {
+                    b.Navigation("PurchaseInvoiceItems");
+
+                    b.Navigation("SalesInvoiceItems");
                 });
 
             modelBuilder.Entity("GearNXT_Backend.Models.PurchaseInvoice", b =>
@@ -892,6 +973,13 @@ namespace GearNXT_Backend.Data.Migrations
             modelBuilder.Entity("GearNXT_Backend.Models.SalesInvoice", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("GearNXT_Backend.Models.Vendor", b =>
+                {
+                    b.Navigation("Parts");
+
+                    b.Navigation("PurchaseInvoices");
                 });
 #pragma warning restore 612, 618
         }

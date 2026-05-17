@@ -31,9 +31,9 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // =========================
-        // USER CONFIGURATION
-        // =========================
+        // Model Configurations
+
+        // User
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasIndex(u => u.Email).IsUnique();
@@ -42,48 +42,49 @@ public class AppDbContext : DbContext
                   .HasConversion<string>(); // store enum as string
         });
 
-        // =========================
-        // VENDOR CONFIGURATION
-        // =========================
+        // Vendor
         modelBuilder.Entity<Vendor>(entity =>
         {
             entity.HasIndex(v => v.Email).IsUnique();
         });
 
-
-        // =========================
-        // PART CONFIGURATION
-        // =========================
+        // Part
         modelBuilder.Entity<Part>(entity =>
         {
+            entity.HasIndex(part => part.Name).IsUnique();
             entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
-            entity.HasOne<Vendor>()
-                  .WithMany()
-                  .HasForeignKey(p => p.VendorId)
-                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(p => p.Vendor)
+                .WithMany(v => v.Parts)
+                .HasForeignKey(p => p.VendorId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // =========================
-        // PURCHASE INVOICE CONFIGURATION
-        // =========================
+        // PurchaseInvoice 
         modelBuilder.Entity<PurchaseInvoice>(entity =>
         {
             entity.Property(i => i.TotalAmount).HasColumnType("decimal(18,2)");
+            entity.HasOne(pi => pi.Vendor)
+                .WithMany(v => v.PurchaseInvoices)
+                .HasForeignKey(pi => pi.VendorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             entity.HasMany(i => i.Items)
-                  .WithOne()
-                  .HasForeignKey(i => i.InvoiceId)
-                  .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(i => i.Invoice)
+                .HasForeignKey(i => i.InvoiceId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // PurchaseInvoiceItem
         modelBuilder.Entity<PurchaseInvoiceItem>(entity =>
         {
             entity.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");
-            entity.HasOne<Part>()
-                  .WithMany()
-                  .HasForeignKey(i => i.PartId)
-                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(i => i.Part)
+                .WithMany(p => p.PurchaseInvoiceItems)
+                .HasForeignKey(i => i.PartId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
+        // Customer
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasIndex(customer => customer.Email).IsUnique();
@@ -97,41 +98,80 @@ public class AppDbContext : DbContext
                   .WithOne(invoice => invoice.Customer)
                   .HasForeignKey(invoice => invoice.CustomerId)
                   .OnDelete(DeleteBehavior.Restrict);
+            
+            entity.HasMany(customer => customer.Appointments)
+                .WithOne(a => a.Customer)
+                .HasForeignKey(a => a.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(customer => customer.PartRequests)
+                .WithOne(pr => pr.Customer)
+                .HasForeignKey(pr => pr.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(customer => customer.Reviews)
+                .WithOne(r => r.Customer)
+                .HasForeignKey(r => r.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // Vehicle
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.HasIndex(vehicle => vehicle.VehicleNumber).IsUnique();
             entity.HasIndex(vehicle => vehicle.LicensePlate).IsUnique();
         });
 
-        modelBuilder.Entity<Part>(entity =>
-        {
-            entity.HasIndex(part => part.Name).IsUnique();
-        });
-
+        // SalesInvoice
         modelBuilder.Entity<SalesInvoice>(entity =>
         {
+            entity.Property(si => si.TotalAmount).HasColumnType("decimal(18,2)");
+            entity.Property(si => si.DiscountAmount).HasColumnType("decimal(18,2)");
+            entity.Property(si => si.GrandTotal).HasColumnType("decimal(18,2)");
+
             entity.HasMany(invoice => invoice.Items)
                   .WithOne(item => item.Invoice)
                   .HasForeignKey(item => item.InvoiceId)
                   .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.HasOne(si => si.Customer)
+                .WithMany(c => c.SalesInvoices)
+                .HasForeignKey(si => si.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(si => si.Staff)
+                .WithMany()
+                .HasForeignKey(si => si.StaffId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
+        // SalesInvoiceItem
         modelBuilder.Entity<SalesInvoiceItem>(entity =>
         {
+            entity.Property(sii => sii.UnitPrice).HasColumnType("decimal(18,2)");
+
+            entity.HasOne(item => item.Invoice)
+                .WithMany(si => si.Items)
+                .HasForeignKey(item => item.InvoiceId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(item => item.Part)
-                  .WithMany()
-                  .HasForeignKey(item => item.PartId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.SalesInvoiceItems)
+                .HasForeignKey(item => item.PartId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
+
+
+        // Data Seeding
+
+        // user
         modelBuilder.Entity<User>().HasData(new User
         {
             Id = 1,
             Name = "Admin",
             Email = "admin@gearnxt.com",
-            PasswordHash = "$2a$11$Sw.RuMV4y9DiJY1wcIM6k.9/yQpmaqNBe3H7uB5Vr/htVWaYKp94i", // must be static
+            PasswordHash = "$2a$11$Sw.RuMV4y9DiJY1wcIM6k.9/yQpmaqNBe3H7uB5Vr/htVWaYKp94i", 
             Role = Role.Admin,
             Phone = "9800000000",
             IsActive = true,
@@ -140,8 +180,7 @@ public class AppDbContext : DbContext
             CreatedAt = new DateTime(2026, 01, 01, 0, 0, 0, DateTimeKind.Utc)
         });
 
-
-
+        // customers
         modelBuilder.Entity<Customer>().HasData(
             new Customer
             {
@@ -162,6 +201,8 @@ public class AppDbContext : DbContext
                 CreatedAt = new DateTime(2026, 04, 07, 0, 0, 0, DateTimeKind.Utc)
             }
         );
+
+        // vehicles
         modelBuilder.Entity<Vehicle>().HasData(
             new Vehicle
             {
@@ -186,7 +227,42 @@ public class AppDbContext : DbContext
                 CreatedAt = new DateTime(2026, 04, 07, 0, 0, 0, DateTimeKind.Utc)
             }
         );
+        
+        // vendors
+        modelBuilder.Entity<Vendor>().HasData(
+            new Vendor
+            {
+                Id = 1,
+                Name = "Atlas Auto Supplies",
+                Email = "atlas@vendors.com",
+                Phone = "9800000011",
+                Address = "Kathmandu",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Vendor
+            {
+                Id = 2,
+                Name = "Everest Parts Co.",
+                Email = "everest@vendors.com",
+                Phone = "9800000022",
+                Address = "Pokhara",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Vendor
+            {
+                Id = 3,
+                Name = "Terai Traders",
+                Email = "terai@vendors.com",
+                Phone = "9800000033",
+                Address = "Biratnagar",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
 
+        // parts
         modelBuilder.Entity<Part>().HasData(
             new Part
             {
@@ -195,6 +271,7 @@ public class AppDbContext : DbContext
                 Description = "Front brake pad set",
                 Price = 6800m,
                 StockQuantity = 25,
+                VendorId = 1,
                 IsActive = true,
                 CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -205,6 +282,7 @@ public class AppDbContext : DbContext
                 Description = "Premium oil filter",
                 Price = 2200m,
                 StockQuantity = 40,
+                VendorId = 1,
                 IsActive = true,
                 CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -215,6 +293,7 @@ public class AppDbContext : DbContext
                 Description = "Engine air filter",
                 Price = 1800m,
                 StockQuantity = 35,
+                VendorId = 2,
                 IsActive = true,
                 CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -225,42 +304,58 @@ public class AppDbContext : DbContext
                 Description = "Heavy-duty clutch plate",
                 Price = 9200m,
                 StockQuantity = 18,
+                VendorId = 3,
                 IsActive = true,
                 CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)
             }
         );
 
-        // Seed appointments, part requests, reviews, credits, and sales invoices
+        // appointments
         modelBuilder.Entity<Appointment>().HasData(
             new Appointment { 
-                Id = 1, CustomerId = 10, ServiceType = "Full Vehicle Service", 
+                Id = 1, 
+                CustomerId = 100, 
+                ServiceType = "Full Vehicle Service", 
                 PreferredDate = new DateTime(2026, 04, 30, 0, 0, 0, DateTimeKind.Utc),  
-                Status = "Upcoming", Notes = "Regular maintenance", 
+                Status = "Upcoming", 
+                Notes = "Regular maintenance", 
                 CreatedAt = new DateTime(2026, 04, 01, 0, 0, 0, DateTimeKind.Utc)       
             },
             new Appointment { 
-                Id = 2, CustomerId = 10, ServiceType = "Brake Inspection", 
+                Id = 2, 
+                CustomerId = 100, 
+                ServiceType = "Brake Inspection", 
                 PreferredDate = new DateTime(2026, 04, 12, 0, 0, 0, DateTimeKind.Utc),  
-                Status = "Completed", Notes = "Brake pads replaced", 
+                Status = "Completed", 
+                Notes = "Brake pads replaced", 
                 CreatedAt = new DateTime(2026, 03, 28, 0, 0, 0, DateTimeKind.Utc)       
             }
         );
 
+        // part requests
         modelBuilder.Entity<PartRequest>().HasData(
             new PartRequest { 
-                Id = 1, CustomerId = 10, PartName = "Turbocharger Kit", 
-                Description = "OEM preferred", Status = "Pending", 
+                Id = 1, 
+                CustomerId = 100, 
+                PartName = "Turbocharger Kit", 
+                Description = "OEM preferred", 
+                Status = "Pending", 
                 CreatedAt = new DateTime(2026, 04, 25, 0, 0, 0, DateTimeKind.Utc)       
             }
         );
 
+        // reviews
         modelBuilder.Entity<Review>().HasData(
             new Review { 
-                Id = 1, CustomerId = 10, Rating = 5, Comment = "Excellent service.", 
+                Id = 1, 
+                CustomerId = 100, 
+                Rating = 5, 
+                Comment = "Excellent service.", 
                 CreatedAt = new DateTime(2026, 04, 13, 0, 0, 0, DateTimeKind.Utc)       
             }
         );
 
+        // sales invoices
         modelBuilder.Entity<SalesInvoice>().HasData(
             new SalesInvoice
             {
@@ -277,9 +372,15 @@ public class AppDbContext : DbContext
                 EmailSent = false
             },
             new SalesInvoice { 
-                Id = 2, InvoiceNumber = "INV-2026-1002", CustomerId = 11, 
-                TotalAmount = 16500m, DiscountAmount = 1650m, DiscountApplied = true, 
-                GrandTotal = 14850m, PaymentStatus = "Credit", 
+                Id = 2, 
+                InvoiceNumber = "INV-2026-1002", 
+                CustomerId = 100, 
+                StaffId = 1,
+                TotalAmount = 16500m, 
+                DiscountAmount = 1650m, 
+                DiscountApplied = true, 
+                GrandTotal = 14850m, 
+                PaymentStatus = "Credit", 
                 InvoiceDate = new DateTime(2026, 03, 12, 0, 0, 0, DateTimeKind.Utc)            
             },
             new SalesInvoice
@@ -298,6 +399,7 @@ public class AppDbContext : DbContext
             }
         );
 
+        // sales invoice items
         modelBuilder.Entity<SalesInvoiceItem>().HasData(
             new SalesInvoiceItem
             {
@@ -334,39 +436,6 @@ public class AppDbContext : DbContext
                 Quantity = 2,
                 UnitPrice = 1800m,
                 PartName = "Air Filter"
-            }
-        );
-
-        modelBuilder.Entity<Vendor>().HasData(
-            new Vendor
-            {
-                Id = 1,
-                Name = "Atlas Auto Supplies",
-                Email = "atlas@vendors.com",
-                Phone = "9800000011",
-                Address = "Kathmandu",
-                IsActive = true,
-                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
-            },
-            new Vendor
-            {
-                Id = 2,
-                Name = "Everest Parts Co.",
-                Email = "everest@vendors.com",
-                Phone = "9800000022",
-                Address = "Pokhara",
-                IsActive = true,
-                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
-            },
-            new Vendor
-            {
-                Id = 3,
-                Name = "Terai Traders",
-                Email = "terai@vendors.com",
-                Phone = "9800000033",
-                Address = "Biratnagar",
-                IsActive = true,
-                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
             }
         );
     }

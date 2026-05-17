@@ -15,4 +15,8 @@ public class PurchaseInvoiceItem
 
     [Range(0, double.MaxValue)]
     public decimal UnitPrice { get; set; }
+
+    public PurchaseInvoice? Invoice { get; set; }
+
+    public Part? Part { get; set; }
 }

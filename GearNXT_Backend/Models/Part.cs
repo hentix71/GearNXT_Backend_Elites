@@ -32,4 +32,10 @@ public class Part
     public int VendorId { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    public Vendor? Vendor { get; set; }
+
+    public ICollection<SalesInvoiceItem> SalesInvoiceItems { get; set; } = new List<SalesInvoiceItem>();
+
+    public ICollection<PurchaseInvoiceItem> PurchaseInvoiceItems { get; set; } = new List<PurchaseInvoiceItem>();
 }

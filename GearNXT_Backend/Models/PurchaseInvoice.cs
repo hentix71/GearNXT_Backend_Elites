@@ -18,5 +18,7 @@ public class PurchaseInvoice
     [MaxLength(150)]
     public string? CreatedBy { get; set; }
 
-    public List<PurchaseInvoiceItem> Items { get; set; } = new();
+    public Vendor? Vendor { get; set; }
+
+    public ICollection<PurchaseInvoiceItem> Items { get; set; } = new List<PurchaseInvoiceItem>();
 }

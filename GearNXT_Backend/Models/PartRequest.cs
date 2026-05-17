@@ -21,4 +21,6 @@ public class PartRequest
     public string Status { get; set; } = "Pending";
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public Customer? Customer { get; set; }
 }

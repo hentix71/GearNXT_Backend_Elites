@@ -23,4 +23,6 @@ public class Appointment
     public string? Notes { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public Customer? Customer { get; set; }
 }

@@ -26,4 +26,10 @@ public class Customer
     public ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 
     public ICollection<SalesInvoice> SalesInvoices { get; set; } = new List<SalesInvoice>();
+    
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+    public ICollection<PartRequest> PartRequests { get; set; } = new List<PartRequest>();
+
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }
