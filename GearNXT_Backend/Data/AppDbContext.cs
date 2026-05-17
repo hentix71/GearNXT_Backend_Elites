@@ -94,7 +94,7 @@ public class AppDbContext : DbContext
             Id = 1,
             Name = "Admin",
             Email = "admin@gearnxt.com",
-            PasswordHash = "PRECOMPUTED_HASH_HERE", // must be static
+            PasswordHash = "$2a$11$Sw.RuMV4y9DiJY1wcIM6k.9/yQpmaqNBe3H7uB5Vr/htVWaYKp94i", // must be static
             Role = Role.Admin,
             Phone = "9800000000",
             IsActive = true,
