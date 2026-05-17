@@ -66,6 +66,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 // JwtHelper — Dependency Injection
 // ============================================
 builder.Services.AddScoped<JwtHelper>();
+// Email service (development logger)
+builder.Services.AddScoped<EmailService>();
 
 // ============================================
 // Controllers
@@ -125,6 +127,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<VendorService>();
+builder.Services.AddScoped<PartsService>();
+builder.Services.AddScoped<PurchaseInvoiceService>();
+builder.Services.AddScoped<LowStockNotifier>();
+builder.Services.AddScoped<NotificationService>();
 
 
 // ============================================

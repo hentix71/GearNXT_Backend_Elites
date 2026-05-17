@@ -14,9 +14,12 @@ public class AppDbContext : DbContext
     // Tables
     public DbSet<User> Users { get; set; }
     public DbSet<Vendor> Vendors { get; set; }
+    public DbSet<Part> Parts { get; set; }
+    public DbSet<PurchaseInvoice> PurchaseInvoices { get; set; }
+    public DbSet<PurchaseInvoiceItem> PurchaseInvoiceItems { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Vehicle> Vehicles { get; set; }
-    public DbSet<Part> Parts { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<PartRequest> PartRequests { get; set; }
     public DbSet<Review> Reviews { get; set; }
@@ -45,6 +48,40 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Vendor>(entity =>
         {
             entity.HasIndex(v => v.Email).IsUnique();
+        });
+
+
+        // =========================
+        // PART CONFIGURATION
+        // =========================
+        modelBuilder.Entity<Part>(entity =>
+        {
+            entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
+            entity.HasOne<Vendor>()
+                  .WithMany()
+                  .HasForeignKey(p => p.VendorId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // =========================
+        // PURCHASE INVOICE CONFIGURATION
+        // =========================
+        modelBuilder.Entity<PurchaseInvoice>(entity =>
+        {
+            entity.Property(i => i.TotalAmount).HasColumnType("decimal(18,2)");
+            entity.HasMany(i => i.Items)
+                  .WithOne()
+                  .HasForeignKey(i => i.InvoiceId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PurchaseInvoiceItem>(entity =>
+        {
+            entity.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");
+            entity.HasOne<Part>()
+                  .WithMany()
+                  .HasForeignKey(i => i.PartId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<Customer>(entity =>
@@ -103,6 +140,8 @@ public class AppDbContext : DbContext
             CreatedAt = new DateTime(2026, 01, 01, 0, 0, 0, DateTimeKind.Utc)
         });
 
+
+
         modelBuilder.Entity<Customer>().HasData(
             new Customer
             {
@@ -123,7 +162,6 @@ public class AppDbContext : DbContext
                 CreatedAt = new DateTime(2026, 04, 07, 0, 0, 0, DateTimeKind.Utc)
             }
         );
-
         modelBuilder.Entity<Vehicle>().HasData(
             new Vehicle
             {
@@ -238,6 +276,12 @@ public class AppDbContext : DbContext
                 InvoiceDate = new DateTime(2026, 04, 20, 0, 0, 0, DateTimeKind.Utc),
                 EmailSent = false
             },
+            new SalesInvoice { 
+                Id = 2, InvoiceNumber = "INV-2026-1002", CustomerId = 11, 
+                TotalAmount = 16500m, DiscountAmount = 1650m, DiscountApplied = true, 
+                GrandTotal = 14850m, PaymentStatus = "Credit", 
+                InvoiceDate = new DateTime(2026, 03, 12, 0, 0, 0, DateTimeKind.Utc)            
+            },
             new SalesInvoice
             {
                 Id = 2001,
@@ -290,6 +334,39 @@ public class AppDbContext : DbContext
                 Quantity = 2,
                 UnitPrice = 1800m,
                 PartName = "Air Filter"
+            }
+        );
+
+        modelBuilder.Entity<Vendor>().HasData(
+            new Vendor
+            {
+                Id = 1,
+                Name = "Atlas Auto Supplies",
+                Email = "atlas@vendors.com",
+                Phone = "9800000011",
+                Address = "Kathmandu",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Vendor
+            {
+                Id = 2,
+                Name = "Everest Parts Co.",
+                Email = "everest@vendors.com",
+                Phone = "9800000022",
+                Address = "Pokhara",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new Vendor
+            {
+                Id = 3,
+                Name = "Terai Traders",
+                Email = "terai@vendors.com",
+                Phone = "9800000033",
+                Address = "Biratnagar",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 01, 05, 0, 0, 0, DateTimeKind.Utc)
             }
         );
     }

@@ -3,6 +3,7 @@ using System;
 using GearNXT_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GearNXT_Backend.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260429073715_Addm2-m4")]
+    partial class Addm2m4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,62 +114,6 @@ namespace GearNXT_Backend.Data.Migrations
                     b.ToTable("CreditPayments");
                 });
 
-            modelBuilder.Entity("GearNXT_Backend.Models.Customer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Customers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 100,
-                            Address = "Kathmandu",
-                            CreatedAt = new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "anil.sharma@example.com",
-                            Name = "Anil Sharma",
-                            Phone = "9801112233"
-                        },
-                        new
-                        {
-                            Id = 101,
-                            Address = "Lalitpur",
-                            CreatedAt = new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "sita.karki@example.com",
-                            Name = "Sita Karki",
-                            Phone = "9802223344"
-                        });
-                });
-
             modelBuilder.Entity("GearNXT_Backend.Models.Notification", b =>
                 {
                     b.Property<int>("Id")
@@ -185,9 +132,6 @@ namespace GearNXT_Backend.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
-
-                    b.Property<int?>("PartId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -219,9 +163,6 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -242,62 +183,9 @@ namespace GearNXT_Backend.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.HasIndex("VendorId");
 
                     b.ToTable("Parts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Category = "",
-                            CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Front brake pad set",
-                            IsActive = true,
-                            Name = "Brake Pad Set",
-                            Price = 6800m,
-                            StockQuantity = 25,
-                            VendorId = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Category = "",
-                            CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Premium oil filter",
-                            IsActive = true,
-                            Name = "Oil Filter",
-                            Price = 2200m,
-                            StockQuantity = 40,
-                            VendorId = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Category = "",
-                            CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Engine air filter",
-                            IsActive = true,
-                            Name = "Air Filter",
-                            Price = 1800m,
-                            StockQuantity = 35,
-                            VendorId = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Category = "",
-                            CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Heavy-duty clutch plate",
-                            IsActive = true,
-                            Name = "Clutch Plate",
-                            Price = 9200m,
-                            StockQuantity = 18,
-                            VendorId = 0
-                        });
                 });
 
             modelBuilder.Entity("GearNXT_Backend.Models.PartRequest", b =>
@@ -446,7 +334,10 @@ namespace GearNXT_Backend.Data.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("DiscountAmount")
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Discount")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("DiscountApplied")
@@ -458,9 +349,6 @@ namespace GearNXT_Backend.Data.Migrations
                     b.Property<decimal>("GrandTotal")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime>("InvoiceDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -471,131 +359,39 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int>("StaffId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("TotalAmount")
+                    b.Property<decimal>("Subtotal")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.ToTable("SalesInvoices");
 
                     b.HasData(
                         new
                         {
-                            Id = 2000,
-                            CustomerId = 100,
-                            DiscountAmount = 1250m,
+                            Id = 1,
+                            CustomerId = 10,
+                            Date = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Discount = 1250m,
                             DiscountApplied = true,
                             EmailSent = false,
                             GrandTotal = 11250m,
-                            InvoiceDate = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            InvoiceNumber = "INV-20260420-0001",
+                            InvoiceNumber = "INV-2026-1001",
                             PaymentStatus = "Paid",
-                            StaffId = 1,
-                            TotalAmount = 12500m
+                            Subtotal = 12500m
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 11,
-                            DiscountAmount = 1650m,
+                            Date = new DateTime(2026, 3, 12, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Discount = 1650m,
                             DiscountApplied = true,
                             EmailSent = false,
                             GrandTotal = 14850m,
-                            InvoiceDate = new DateTime(2026, 3, 12, 0, 0, 0, 0, DateTimeKind.Utc),
                             InvoiceNumber = "INV-2026-1002",
                             PaymentStatus = "Credit",
-                            StaffId = 0,
-                            TotalAmount = 16500m
-                        },
-                        new
-                        {
-                            Id = 2001,
-                            CustomerId = 101,
-                            DiscountAmount = 1650m,
-                            DiscountApplied = true,
-                            EmailSent = false,
-                            GrandTotal = 14850m,
-                            InvoiceDate = new DateTime(2026, 4, 21, 0, 0, 0, 0, DateTimeKind.Utc),
-                            InvoiceNumber = "INV-20260421-0002",
-                            PaymentStatus = "Credit",
-                            StaffId = 1,
-                            TotalAmount = 16500m
-                        });
-                });
-
-            modelBuilder.Entity("GearNXT_Backend.Models.SalesInvoiceItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("InvoiceId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PartId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PartName")
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.HasIndex("PartId");
-
-                    b.ToTable("SalesInvoiceItems");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 3000,
-                            InvoiceId = 2000,
-                            PartId = 1,
-                            PartName = "Brake Pad Set",
-                            Quantity = 1,
-                            UnitPrice = 6800m
-                        },
-                        new
-                        {
-                            Id = 3001,
-                            InvoiceId = 2000,
-                            PartId = 4,
-                            PartName = "Clutch Plate",
-                            Quantity = 1,
-                            UnitPrice = 9200m
-                        },
-                        new
-                        {
-                            Id = 3002,
-                            InvoiceId = 2001,
-                            PartId = 2,
-                            PartName = "Oil Filter",
-                            Quantity = 3,
-                            UnitPrice = 2200m
-                        },
-                        new
-                        {
-                            Id = 3003,
-                            InvoiceId = 2001,
-                            PartId = 3,
-                            PartName = "Air Filter",
-                            Quantity = 2,
-                            UnitPrice = 1800m
+                            Subtotal = 16500m
                         });
                 });
 
@@ -643,9 +439,6 @@ namespace GearNXT_Backend.Data.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Users");
 
                     b.HasData(
@@ -659,76 +452,28 @@ namespace GearNXT_Backend.Data.Migrations
                             PasswordHash = "PRECOMPUTED_HASH_HERE",
                             Phone = "9800000000",
                             Role = "Admin"
-                        });
-                });
-
-            modelBuilder.Entity("GearNXT_Backend.Models.Vehicle", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("LicensePlate")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("Make")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Model")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("VehicleNumber")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int?>("Year")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("LicensePlate")
-                        .IsUnique();
-
-                    b.HasIndex("VehicleNumber")
-                        .IsUnique();
-
-                    b.ToTable("Vehicles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1000,
-                            CreatedAt = new DateTime(2026, 4, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CustomerId = 100,
-                            LicensePlate = "BA-2-PA-1234",
-                            Make = "Honda",
-                            Model = "City",
-                            VehicleNumber = "VIN-ANIL-001",
-                            Year = 2022
                         },
                         new
                         {
-                            Id = 1001,
-                            CreatedAt = new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CustomerId = 101,
-                            LicensePlate = "BA-3-PA-5678",
-                            Make = "Toyota",
-                            Model = "Corolla",
-                            VehicleNumber = "VIN-SITA-001",
-                            Year = 2021
+                            Id = 10,
+                            CreatedAt = new DateTime(2026, 2, 2, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "customer1@gearnxt.com",
+                            IsActive = true,
+                            Name = "Demo Customer 1",
+                            PasswordHash = "DEMO_HASH",
+                            Phone = "9810000003",
+                            Role = "Customer"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2026, 3, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "customer2@gearnxt.com",
+                            IsActive = true,
+                            Name = "Demo Customer 2",
+                            PasswordHash = "DEMO_HASH",
+                            Phone = "9810000004",
+                            Role = "Customer"
                         });
                 });
 
@@ -741,7 +486,6 @@ namespace GearNXT_Backend.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
@@ -749,7 +493,6 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
@@ -762,7 +505,6 @@ namespace GearNXT_Backend.Data.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
@@ -772,9 +514,6 @@ namespace GearNXT_Backend.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Vendors");
@@ -836,60 +575,7 @@ namespace GearNXT_Backend.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GearNXT_Backend.Models.SalesInvoice", b =>
-                {
-                    b.HasOne("GearNXT_Backend.Models.Customer", "Customer")
-                        .WithMany("SalesInvoices")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("GearNXT_Backend.Models.SalesInvoiceItem", b =>
-                {
-                    b.HasOne("GearNXT_Backend.Models.SalesInvoice", "Invoice")
-                        .WithMany("Items")
-                        .HasForeignKey("InvoiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GearNXT_Backend.Models.Part", "Part")
-                        .WithMany()
-                        .HasForeignKey("PartId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Invoice");
-
-                    b.Navigation("Part");
-                });
-
-            modelBuilder.Entity("GearNXT_Backend.Models.Vehicle", b =>
-                {
-                    b.HasOne("GearNXT_Backend.Models.Customer", "Customer")
-                        .WithMany("Vehicles")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("GearNXT_Backend.Models.Customer", b =>
-                {
-                    b.Navigation("SalesInvoices");
-
-                    b.Navigation("Vehicles");
-                });
-
             modelBuilder.Entity("GearNXT_Backend.Models.PurchaseInvoice", b =>
-                {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("GearNXT_Backend.Models.SalesInvoice", b =>
                 {
                     b.Navigation("Items");
                 });
