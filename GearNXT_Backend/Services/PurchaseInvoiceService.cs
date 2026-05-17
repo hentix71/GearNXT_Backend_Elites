@@ -22,6 +22,7 @@ public class PurchaseInvoiceService
 
     public async Task<ServiceResult<PurchaseInvoiceDto>> CreateInvoiceAsync(PurchaseInvoiceCreateDto dto, string? createdBy)
     {
+        // Validate core invoice structure and vendor before touching stock.
         if (dto.Items.Count == 0)
         {
             return ServiceResult<PurchaseInvoiceDto>.Fail(400, "At least one item is required.");
@@ -55,6 +56,7 @@ public class PurchaseInvoiceService
             return ServiceResult<PurchaseInvoiceDto>.Fail(404, "One or more parts were not found.");
         }
 
+        // Single transaction keeps invoice, items, and stock updates consistent.
         await using var transaction = await _db.Database.BeginTransactionAsync();
 
         var invoice = new PurchaseInvoice
@@ -79,6 +81,7 @@ public class PurchaseInvoiceService
                 UnitPrice = item.UnitPrice
             });
 
+            // Update inventory levels as items are added to the invoice.
             var part = parts.First(p => p.Id == item.PartId);
             part.StockQuantity += item.Quantity;
         }
@@ -87,6 +90,7 @@ public class PurchaseInvoiceService
         await _db.SaveChangesAsync();
         await transaction.CommitAsync();
 
+        // Re-evaluate low-stock notifications for affected parts only.
         await _notifier.CreateLowStockNotificationsAsync(partIds);
 
         var response = new PurchaseInvoiceDto

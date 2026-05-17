@@ -11,6 +11,7 @@ namespace GearNXT_Backend.Services;
 
 public class PartsService
 {
+    // Shared validation rules for create/update to keep API behavior consistent.
     private static readonly HashSet<string> AllowedCategories = new(StringComparer.OrdinalIgnoreCase)
     {
         "Engine",
@@ -38,6 +39,7 @@ public class PartsService
 
     public async Task<ServiceResult<Part>> CreatePartAsync(PartCreateDto dto)
     {
+        // Validate required fields and vendor ownership before insert.
         var validationError = ValidatePart(dto.Name, dto.Category, dto.Price, dto.StockQuantity, dto.VendorId);
         if (validationError != null)
         {
@@ -51,6 +53,7 @@ public class PartsService
         }
 
         var normalizedName = dto.Name.Trim().ToLower();
+        // Avoid duplicate names for the same vendor.
         var duplicateExists = await _db.Parts
             .AnyAsync(p => p.VendorId == dto.VendorId && p.Name.ToLower() == normalizedName);
         if (duplicateExists)
@@ -112,6 +115,7 @@ public class PartsService
 
     public async Task<ServiceResult<Part>> UpdatePartAsync(int id, PartUpdateDto dto)
     {
+        // Reuse validation and vendor checks for updates.
         var validationError = ValidatePart(dto.Name, dto.Category, dto.Price, dto.StockQuantity, dto.VendorId);
         if (validationError != null)
         {
@@ -131,6 +135,7 @@ public class PartsService
         }
 
         var normalizedName = dto.Name.Trim().ToLower();
+        // Prevent renaming into an existing part for the same vendor.
         var duplicateExists = await _db.Parts
             .AnyAsync(p => p.Id != id && p.VendorId == dto.VendorId && p.Name.ToLower() == normalizedName);
         if (duplicateExists)
@@ -146,6 +151,7 @@ public class PartsService
         part.VendorId = dto.VendorId;
 
         await _db.SaveChangesAsync();
+        // Trigger low-stock evaluation for the updated part.
         await _notifier.CreateLowStockNotificationsAsync(new[] { part.Id });
 
         return ServiceResult<Part>.Ok(part);

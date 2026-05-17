@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using GearNXT_Backend.DTOs.Inventory;
 using GearNXT_Backend.Models;
 using GearNXT_Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GearNXT_Backend.Controllers;
@@ -18,6 +19,8 @@ public class PartsController : ControllerBase
         _partsService = partsService;
     }
 
+    // Admin-only write operations for inventory.
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<Part>> CreatePart([FromBody] PartCreateDto dto)
     {
@@ -56,6 +59,8 @@ public class PartsController : ControllerBase
         return Ok(result.Data);
     }
 
+    // Admin-only edit of inventory data.
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdatePart(int id, [FromBody] PartUpdateDto dto)
     {
@@ -68,6 +73,8 @@ public class PartsController : ControllerBase
         return NoContent();
     }
 
+    // Admin-only deletion with referential checks enforced in service.
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeletePart(int id)
     {
