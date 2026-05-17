@@ -21,6 +21,7 @@ public class LowStockNotifier
     {
         var lowStockParts = await _db.Parts
             .AsNoTracking()
+            .Include(p => p.Vendor)
             .Where(p => p.StockQuantity < 10)
             .ToListAsync();
 
@@ -36,6 +37,7 @@ public class LowStockNotifier
     {
         var lowStockParts = await _db.Parts
             .AsNoTracking()
+            .Include(p => p.Vendor)
             .Where(p => partIds.Contains(p.Id) && p.StockQuantity < 10)
             .ToListAsync();
 

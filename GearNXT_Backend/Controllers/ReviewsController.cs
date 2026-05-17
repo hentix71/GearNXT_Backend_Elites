@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using GearNXT_Backend.Data;
 using GearNXT_Backend.DTOs.Review;
 using GearNXT_Backend.Models;
@@ -38,7 +39,10 @@ public class ReviewsController : ControllerBase
     [HttpGet]
     public IActionResult List()
     {
-        var list = _db.Reviews.OrderByDescending(r => r.CreatedAt).ToList();
+        var list = _db.Reviews
+            .Include(r => r.Customer)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToList();
         return Ok(list);
     }
 

@@ -80,7 +80,10 @@ public class PartsService
 
     public async Task<ServiceResult<List<Part>>> GetPartsAsync(string? category, int? vendorId, string? search)
     {
-        var query = _db.Parts.AsNoTracking().AsQueryable();
+        var query = _db.Parts
+            .AsNoTracking()
+            .Include(p => p.Vendor)
+            .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(category))
         {
@@ -104,7 +107,10 @@ public class PartsService
 
     public async Task<ServiceResult<Part>> GetPartByIdAsync(int id)
     {
-        var part = await _db.Parts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        var part = await _db.Parts
+            .AsNoTracking()
+            .Include(p => p.Vendor)
+            .FirstOrDefaultAsync(p => p.Id == id);
         if (part == null)
         {
             return ServiceResult<Part>.Fail(404, "Part not found.");
@@ -122,7 +128,9 @@ public class PartsService
             return ServiceResult<Part>.Fail(400, validationError);
         }
 
-        var part = await _db.Parts.FirstOrDefaultAsync(p => p.Id == id);
+        var part = await _db.Parts
+            .Include(p => p.Vendor)
+            .FirstOrDefaultAsync(p => p.Id == id);
         if (part == null)
         {
             return ServiceResult<Part>.Fail(404, "Part not found.");
@@ -181,6 +189,7 @@ public class PartsService
     {
         var parts = await _db.Parts
             .AsNoTracking()
+            .Include(p => p.Vendor)
             .Where(p => p.StockQuantity < 10)
             .ToListAsync();
 

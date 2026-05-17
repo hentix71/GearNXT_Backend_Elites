@@ -63,13 +63,20 @@ public class VendorService
 
     public async Task<List<ResponseVendorDto>> ListVendorsAsync()
     {
-        var vendors = await _db.Vendors.ToListAsync();
+        var vendors = await _db.Vendors
+            .Include(v => v.Parts)
+            .Include(v => v.PurchaseInvoices)
+            .ToListAsync();
         return vendors.Select(MapToDto).ToList();
     }
 
     public async Task<List<ResponseVendorDto>> ListActiveVendorsAsync()
     {
-        var vendors = await _db.Vendors.Where(v => v.IsActive).ToListAsync();
+        var vendors = await _db.Vendors
+            .Include(v => v.Parts)
+            .Include(v => v.PurchaseInvoices)
+            .Where(v => v.IsActive)
+            .ToListAsync();
         return vendors.Select(MapToDto).ToList();
     }
 

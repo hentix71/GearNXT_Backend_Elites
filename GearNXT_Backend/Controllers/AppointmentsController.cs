@@ -1,5 +1,6 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using GearNXT_Backend.Data;
 using GearNXT_Backend.DTOs.Appointment;
 using GearNXT_Backend.Models;
@@ -41,7 +42,11 @@ public class AppointmentsController : ControllerBase
     public IActionResult MyAppointments()
     {
         var id = GetDemoUserId();
-        var list = _db.Appointments.Where(a => a.CustomerId == id).OrderByDescending(a => a.PreferredDate).ToList();
+        var list = _db.Appointments
+            .Include(a => a.Customer)
+            .Where(a => a.CustomerId == id)
+            .OrderByDescending(a => a.PreferredDate)
+            .ToList();
         return Ok(list);
     }
 
